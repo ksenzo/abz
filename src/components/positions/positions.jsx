@@ -3,10 +3,10 @@ import './positions.scss';
 
 const Positions = (props) => {
 
-    const {data, onCheck} = props;
+    const {data, onCheck, classesValid} = props;
 
     return (
-        <div className='positions_wrapper'>
+        <div className={`positions_wrapper ${classesValid == 'error_valid' ? 'error_valid_pos' : ''}`}>
             <h6 className='positions_title'>{'Select your position'}</h6>
             {
                 data?.positions?.map(item =>

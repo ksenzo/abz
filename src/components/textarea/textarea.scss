@@ -1,6 +1,7 @@
 .text_area_wrap {
   max-width: 380px;
   display: flex;
+  position: relative;
   margin: 37px auto 50px auto;
 }
 
@@ -13,7 +14,6 @@
   cursor: pointer;
 }
 
-
 .upload_btn{
   cursor: pointer;
   display: inline-block;
@@ -21,4 +21,29 @@
   padding: 14px 15px;
   border: 1px solid black;
   border-radius: 4px 0 0 4px;
+}
+
+.error_valid_file {
+  border: 2px solid #CB3D40;
+  border-radius: 4px 0 0 4px;
+}
+
+.error_valid_file2 {
+  border: 2px solid #CB3D40;
+  border-radius: 0 4px 4px 0;
+  border-left: none;
+}
+
+.help_block {
+  color: #CB3D40;
+  position: absolute;
+  bottom: -1px;
+  background: #f8f8f8;
+}
+
+.help_block_textarea {
+  color: #CB3D40;
+  position: absolute;
+  bottom: -20px;
+  background: #f8f8f8;
 }

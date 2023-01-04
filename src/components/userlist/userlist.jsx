@@ -8,8 +8,6 @@ const Userlist = (props) => {
 
     const {handleUsers, url, data, type} = props;
 
-    console.log(data);
-
     const classForAdapt = type === 'mobile' ? 'userlist_mobile' : type === 'desktop' ? 'userlist_desktop' : false;
 
     return (

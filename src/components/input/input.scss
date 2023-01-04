@@ -19,14 +19,35 @@
   margin: 0 auto;
 }
 
-.default_label {
+
+.pl_show {
   position: absolute;
   left: 12px;
   font-size: 16px;
   top: 31px;
   padding: 5px;
-  transition: all 0.1s ease 0s;
+  transition: all 0.5s ease 0s;
   color: #7E7E7E;
+  text-transform: capitalize;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+  -webkit-box-shadow: 0 0 0 40px #f8f8f8 inset !important;
+}
+
+.pl_hid {
+  position: absolute;
+  font-size: 12px;
+  top: 5px;
+  color: #7E7E7E;
+  padding: 6px;
+  left: 9px;
+  transition: all 0.5s ease 0s;
+  background: #f8f8f8;
+  text-transform: capitalize;
 }
 
 .number_hid {
@@ -42,18 +63,17 @@
   color: #7e7e7e;
 }
 
-.label:focus,
-.label:focus-within {
-  .default_label {
-    font-size: 12px;
-    top: 5px;
-    left: 9px;
-    background: #f8f8f8;
-  }
+.error_valid_msg {
+  color: #CB3D40;
 }
 
 .label {
+  position: relative;
   display: flex;
   padding: 18px 0;
 }
 
+.error_valid {
+  position: relative;
+  border: 2px solid #CB3D40;
+}

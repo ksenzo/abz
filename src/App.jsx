@@ -4,28 +4,12 @@ import Navigation from "./components/navigation/navigation";
 import Userlist from "./components/userlist/userlist";
 import Form from "./components/form/form";
 import {useWindowResize} from "./hooks/useWindowResize";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
 
 
 function App() {
-
-    function debounce(func, wait, immediate) {
-        let timeout;
-        return function() {
-            const context = this,
-                args = arguments;
-            const later = function() {
-                timeout = null;
-                if (!immediate) func.apply(context, args);
-            };
-            const callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(context, args);
-        };
-    }
 
     const [width, setWidth] = useState(window.innerWidth);
     const [users, setUsers] = useState([]);
@@ -40,12 +24,14 @@ function App() {
         photo: null,
         position_id: 0
     });
-
-
-    const onFormSubmit = (e) => {
-        e.preventDefault();
-        postUser();
-    }
+    const [formValid, setFormValid] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        position_id: '',
+        photo: ''
+    })
+    const [valid, setValid] = useState(true);
 
     const handleUsers = () => {
         axios.get(mainUrl).then((response) => {
@@ -58,7 +44,14 @@ function App() {
         })
     }
 
-    const onCheck = (event) => {
+    const debouncedHandleResize = debounce(() => {
+        if (width > window.innerWidth + 10 || width < window.innerWidth - 10) {
+            setWidth(window.innerWidth)
+        }
+    }, 10);
+
+
+    const onCheck = event => {
         formData.position_id = event.target.id;
     }
 
@@ -82,24 +75,28 @@ function App() {
                 'content-type': 'multipart/form-data'
             }
         }
+
         return  axios.post(url, formData, config).then(() => {
             axios.get('https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6').then((response) => {
                 const compare = response.data.users.sort((a,b) => (a.last_nom > b.last_nom) ? 1 : ((b.last_nom > a.last_nom) ? -1 : 0));
                 setUsers(compare);
                 return setMainUrl(response.data.links.next_url);
             })
+        }).catch((error) => {
+            setFormValid(error.response.data.fails);
         });
     }
+
     const handlerInputChange = (event) => {
             const { name, value } = event.target;
-
-            setFormActive(() => (
-                value == '' ? false : true
-            ));
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value
             }));
+            formData.name != '' &&
+            formData.email != '' &&
+            formData.phone != '' ?
+            setFormActive(true) : setFormActive(false);
     }
 
 
@@ -116,25 +113,35 @@ function App() {
             'desktop'
         : false;
 
-    useState(() => {
+    useEffect(() => {
         handleUsers(mainUrl);
         handlePositions('https://frontend-test-assignment-api.abz.agency/api/v1/positions');
-    });
-
-    const debouncedHandleResize = debounce(() => {
-        if (width > window.innerWidth + 10 || width < window.innerWidth - 10) {
-            setWidth(window.innerWidth)
-        }
-    }, 10);
+    },[]);
 
     useWindowResize(debouncedHandleResize);
+
+    function debounce(func, wait, immediate) {
+        let timeout;
+        return function() {
+            const context = this,
+                args = arguments;
+            const later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
 
     return (
         <div className="_container">
             <Navigation type={window_type} />
             <Mainscreen type={window_type} />
             <Userlist type={window_type} url={mainUrl} handleUsers={handleUsers} data={users}/>
-            <Form handleFile={handleFile} onCheck={onCheck} formActive={formActive} postUser={postUser} onSubmit={postUser} onChange={handlerInputChange} positions={positions} type={window_type} />
+            <Form formValid={formValid} formData={formData} handleFile={handleFile} onCheck={onCheck} formActive={formActive} postUser={postUser} onSubmit={postUser} onChange={handlerInputChange} positions={positions} type={window_type} />
         </div>
     );
 }
